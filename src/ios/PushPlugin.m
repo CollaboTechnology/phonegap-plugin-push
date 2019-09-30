@@ -75,16 +75,21 @@
 
 }
 
+// 背景: FirebaseSDKを導入するが、FCMは利用しない
+// 問題: PushPluginがInstanceIDをFCMトークンとしてPushServiceに送信してしまうので、APNSトークンを受け取りたいところでAPNSトークンではない物を受け取ってしまう
+// 問題: コメントアウトする
+// 参考: https://app.asana.com/0/1122002848287591/1131808953797665/
+
 //  FCM refresh token
 //  Unclear how this is testable under normal circumstances
-- (void)onTokenRefresh {
-#if !TARGET_IPHONE_SIMULATOR
-    // A rotation of the registration tokens is happening, so the app needs to request a new token.
-    NSLog(@"The FCM registration token needs to be changed.");
-    [[FIRInstanceID instanceID] token];
-    [self initRegistration];
-#endif
-}
+// - (void)onTokenRefresh {
+// #if !TARGET_IPHONE_SIMULATOR
+//     // A rotation of the registration tokens is happening, so the app needs to request a new token.
+//     NSLog(@"The FCM registration token needs to be changed.");
+//     [[FIRInstanceID instanceID] token];
+//     [self initRegistration];
+// #endif
+// }
 
 // contains error info
 - (void)sendDataMessageFailure:(NSNotification *)notification {
@@ -174,9 +179,14 @@
         }];
     } else {
         NSLog(@"Push Plugin VoIP missing or false");
-        [[NSNotificationCenter defaultCenter]
-         addObserver:self selector:@selector(onTokenRefresh)
-         name:kFIRInstanceIDTokenRefreshNotification object:nil];
+        // 背景: FirebaseSDKを導入するが、FCMは利用しない
+        // 問題: PushPluginがInstanceIDをFCMトークンとしてPushServiceに送信してしまうので、APNSトークンを受け取りたいところでAPNSトークンではない物を受け取ってしまう
+        // 問題: コメントアウトする
+        // 参考: https://app.asana.com/0/1122002848287591/1131808953797665
+      
+        // [[NSNotificationCenter defaultCenter]
+        //  addObserver:self selector:@selector(onTokenRefresh)
+        //  name:kFIRInstanceIDTokenRefreshNotification object:nil];
 
         [[NSNotificationCenter defaultCenter]
          addObserver:self selector:@selector(sendDataMessageFailure:)
@@ -308,8 +318,8 @@
                 NSLog(@"Using FCM Notification");
                 [self setUsesFCM: YES];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    if([FIRApp defaultApp] == nil)
-                        [FIRApp configure];
+                    // if([FIRApp defaultApp] == nil)
+                    //     [FIRApp configure];
                     [self initRegistration];
                 });
             } else {
